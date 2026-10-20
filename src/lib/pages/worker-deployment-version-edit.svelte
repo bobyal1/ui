@@ -19,6 +19,7 @@
   import { IconChevronLeft } from '$lib/io/icon';
   import {
     decodeAgentCoreProviderDetails,
+    decodeAwsSnsProviderDetails,
     decodeGcpCloudRunProviderDetails,
     decodeLambdaProviderDetails,
     decodeScalerDetails,
@@ -65,13 +66,16 @@
   {@const info = versionResponse.workerDeploymentVersionInfo}
   {@const providerDetails = decodeLambdaProviderDetails(info.computeConfig)}
   {@const agentCoreDetails = decodeAgentCoreProviderDetails(info.computeConfig)}
+  {@const snsDetails = decodeAwsSnsProviderDetails(info.computeConfig)}
   {@const gcpDetails = decodeGcpCloudRunProviderDetails(info.computeConfig)}
   {@const scalerDetails = decodeScalerDetails(info.computeConfig)}
   <!-- A Version's provider cannot be changed, so the picker shows only the one
        in use rather than offering alternatives that cannot be applied. -->
-  {@const configuredProvider = agentCoreDetails.agentCoreEndpointArn
-    ? 'agentcore'
-    : gcpDetails.gcpWorkerPool
+  {@const configuredProvider = snsDetails.snsTopicArn
+    ? 'aws-sns'
+    : agentCoreDetails.agentCoreEndpointArn
+      ? 'agentcore'
+      : gcpDetails.gcpWorkerPool
       ? 'cloud-run'
       : 'lambda'}
   <div class="flex max-w-[45rem] flex-col gap-4">
@@ -89,12 +93,14 @@
       initialData={{
         provider: configuredProvider,
         lambdaArn: providerDetails.lambdaArn ?? '',
+        snsTopicArn: snsDetails.snsTopicArn ?? '',
         agentCoreEndpointArn: agentCoreDetails.agentCoreEndpointArn ?? '',
         iamRoleArn:
-          providerDetails.iamRoleArn ?? agentCoreDetails.iamRoleArn ?? '',
+          providerDetails.iamRoleArn ?? agentCoreDetails.iamRoleArn ?? snsDetails.iamRoleArn ?? '',
         roleExternalId:
           providerDetails.roleExternalId ??
           agentCoreDetails.roleExternalId ??
+          snsDetails.roleExternalId ??
           '',
         gcpProject: gcpDetails.gcpProject,
         gcpRegion: gcpDetails.gcpRegion,
