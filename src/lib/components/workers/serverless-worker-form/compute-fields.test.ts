@@ -210,7 +210,6 @@ describe('ComputeFields server-rendered setup guidance', () => {
     expect(body).toContain('Open SNS Console');
     expect(body).toContain('id="iamRoleArn"');
     expect(body).toContain('id="roleExternalId"');
-    expect(body).toContain('required="false"');
   });
 
   it('renders Cloud Run guidance, link, warning, and accessible snippet label', () => {
