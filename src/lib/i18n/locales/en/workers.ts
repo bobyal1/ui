@@ -137,6 +137,10 @@ export const Strings = {
   'name-label': 'Name',
   'name-hint': 'A unique name for this serverless worker configuration.',
   'name-placeholder': 'my-serverless-worker',
+  'sns-topic-arn-label': 'SNS Topic ARN',
+  'sns-topic-arn-hint': 'The local Amazon SNS topic that receives worker activation notifications.',
+  'sns-topic-arn-placeholder': 'arn:aws:sns:us-west-2:123456789012:worker-activation',
+  'open-sns-console': 'Open SNS Console',
   'lambda-arn-label': 'Lambda Function ARN',
   'lambda-arn-hint': 'The ARN of the AWS Lambda function to invoke.',
   'lambda-arn-placeholder':
@@ -204,6 +208,9 @@ export const Strings = {
   'provider-lambda': 'AWS Lambda',
   'provider-lambda-description':
     'Run workers as Lambda functions in your AWS account.',
+  'provider-aws-sns': 'AWS SNS Worker',
+  'provider-aws-sns-description':
+    'Publish worker activation notifications to an SNS topic for remote workers to consume.',
   'provider-agentcore': 'Amazon Bedrock AgentCore',
   'provider-agentcore-description':
     'Run Workers as Bedrock AgentCore Runtime sessions in your AWS account.',
