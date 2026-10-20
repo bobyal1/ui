@@ -170,8 +170,7 @@
         translate('deployments.validation-failed-cleanup-failed'),
       );
 
-    if (data.provider === 'aws-sns' && lower.includes('sns'))
-      return { snsTopicArn: [message] };
+    if (data.provider === 'aws-sns') return { snsTopicArn: [message] };
     if (data.provider === 'lambda') {
       const lower = message.toLowerCase();
       if (lower.includes('lambda')) return { lambdaArn: [message] };
