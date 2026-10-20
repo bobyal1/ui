@@ -100,12 +100,12 @@ export const Strings = {
     'Create a serverless worker to get started.',
   'serverless-empty-title': 'Get Started with Serverless Workers',
   'serverless-empty-description':
-    'Serverless workers execute your Temporal activities as AWS Lambda function invocations, eliminating the need to manage worker infrastructure.',
+    'Run Temporal activities with AWS Lambda or trigger remote workers through Amazon SNS, without managing a permanently running worker fleet.',
   'serverless-empty-prereq-title': 'What you need:',
   'serverless-empty-prereq-lambda':
-    'An AWS Lambda function with your activity code',
+    'An AWS Lambda function or an Amazon SNS topic for remote worker activation',
   'serverless-empty-prereq-iam':
-    'An IAM role allowing Temporal to invoke your function',
+    'For Lambda, an IAM role allowing Temporal to invoke the function; SNS can use local AWS credentials or an optional role',
   'serverless-empty-prereq-queue':
     'A task queue name for your serverless worker',
   'create-serverless-worker': 'Create Worker Deployment',
