@@ -108,6 +108,32 @@ describe('getInitialComputeProvider', () => {
   });
 });
 
+describe('AWS SNS validation', () => {
+  const baseSnsData = {
+    provider: 'aws-sns' as const,
+    lambdaArn: '',
+    snsTopicArn: 'arn:aws:sns:us-west-2:123456789012:worker-activation',
+    iamRoleArn: '',
+    roleExternalId: '',
+  };
+
+  it('accepts a valid topic without an IAM role or external ID', () => {
+    expect(editVersionSchema.safeParse(baseSnsData).success).toBe(true);
+  });
+
+  it('rejects a missing or malformed SNS topic ARN', () => {
+    expect(
+      editVersionSchema.safeParse({ ...baseSnsData, snsTopicArn: '' }).success,
+    ).toBe(false);
+    expect(
+      editVersionSchema.safeParse({
+        ...baseSnsData,
+        snsTopicArn: 'not-an-arn',
+      }).success,
+    ).toBe(false);
+  });
+});
+
 describe('Cloud Run replica validation', () => {
   const baseCloudRunData = {
     provider: 'cloud-run' as const,
