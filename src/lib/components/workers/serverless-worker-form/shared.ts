@@ -119,14 +119,6 @@ const validateProviderFields = (
   data: z.infer<z.ZodObject<typeof providerFields>>,
   ctx: z.RefinementCtx,
 ) => {
-  if (data.provider === 'aws-sns') {
-    return buildAwsSnsComputeConfig(
-      data.snsTopicArn,
-      data.iamRoleArn,
-      invokeScaling,
-    );
-  }
-
   if (data.provider === 'agentcore') {
     if (!data.agentCoreEndpointArn) {
       ctx.addIssue({
@@ -292,6 +284,14 @@ export const buildComputeConfigFromForm = (
     maxWorkerLifetimeMs: data.maxWorkerLifetimeMs,
     metricsPollIntervalMs: data.metricsPollIntervalMs,
   };
+
+  if (data.provider === 'aws-sns') {
+    return buildAwsSnsComputeConfig(
+      data.snsTopicArn,
+      data.iamRoleArn,
+      invokeScaling,
+    );
+  }
 
   if (data.provider === 'agentcore') {
     return buildAgentCoreComputeConfig(
