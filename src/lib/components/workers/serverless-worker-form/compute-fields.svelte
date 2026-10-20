@@ -40,6 +40,7 @@
   interface Props {
     provider?: string;
     lambdaArn: string;
+    snsTopicArn?: string;
     agentCoreEndpointArn?: string;
     iamRoleArn: string;
     roleExternalId: string;
@@ -67,6 +68,7 @@
     templates?: Record<ComputeProviderValue, ComputeProviderTemplates>;
     errors?: {
       lambdaArn?: string[];
+      snsTopicArn?: string[];
       agentCoreEndpointArn?: string[];
       iamRoleArn?: string[];
       roleExternalId?: string[];
@@ -89,6 +91,7 @@
   let {
     provider = 'lambda',
     lambdaArn = $bindable(),
+    snsTopicArn = $bindable(''),
     agentCoreEndpointArn = $bindable(''),
     iamRoleArn = $bindable(),
     roleExternalId = $bindable(),
@@ -222,6 +225,29 @@
       {translate('workers.open-lambda-console')}
     </Button>
   </div>
+{:else if provider === 'aws-sns'}
+  <div class="flex flex-wrap items-end gap-4">
+    <Input
+      bind:value={snsTopicArn}
+      id="snsTopicArn"
+      name="snsTopicArn"
+      label={translate('workers.sns-topic-arn-label')}
+      hintText={errors.snsTopicArn?.[0] || translate('workers.sns-topic-arn-hint')}
+      error={!!errors.snsTopicArn?.[0]}
+      placeholder={translate('workers.sns-topic-arn-placeholder')}
+      required
+      class="flex-1"
+    />
+    <Button
+      variant="secondary"
+      type="button"
+      href="https://console.aws.amazon.com/sns/v3/home"
+      target="_blank"
+      TrailingIcon={IconExternalLinkOptical}
+    >
+      {translate('workers.open-sns-console')}
+    </Button>
+  </div>
 {:else if provider === 'agentcore'}
   <div class="flex flex-wrap items-end gap-4">
     <Input
@@ -307,7 +333,7 @@
   {translate('workers.access-section-description')}
 </p>
 
-{#if provider === 'lambda' || provider === 'agentcore'}
+{#if provider === 'lambda' || provider === 'agentcore' || provider === 'aws-sns'}
   <div class="flex flex-col gap-4">
     <Input
       bind:value={iamRoleArn}
@@ -317,7 +343,7 @@
       hintText={errors.iamRoleArn?.[0] || translate('workers.iam-role-hint')}
       error={!!errors.iamRoleArn?.[0]}
       placeholder={translate('workers.iam-role-placeholder')}
-      required
+      required={provider !== 'aws-sns'}
     />
     <Input
       bind:value={roleExternalId}
@@ -328,7 +354,7 @@
         translate('workers.external-id-hint')}
       error={!!errors.roleExternalId?.[0]}
       placeholder={translate('workers.external-id-placeholder')}
-      required
+      required={provider !== 'aws-sns'}
     />
     {#if provider === 'lambda' || provider === 'agentcore'}
       <Accordion
@@ -469,7 +495,7 @@
       : translate('workers.show-defaults')}
   </Button>
 </div>
-{#if showScaling && (provider === 'lambda' || provider === 'agentcore')}
+{#if showScaling && (provider === 'lambda' || provider === 'agentcore' || provider === 'aws-sns')}
   <div class="mt-4 flex flex-col gap-4">
     <Input
       value={scaleUpCooloffMs !== undefined ? String(scaleUpCooloffMs) : ''}

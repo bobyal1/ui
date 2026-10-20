@@ -100,12 +100,12 @@ export const Strings = {
     'Create a serverless worker to get started.',
   'serverless-empty-title': 'Get Started with Serverless Workers',
   'serverless-empty-description':
-    'Serverless workers execute your Temporal activities as AWS Lambda function invocations, eliminating the need to manage worker infrastructure.',
+    'Run Temporal activities with AWS Lambda or trigger remote workers through Amazon SNS, without managing a permanently running worker fleet.',
   'serverless-empty-prereq-title': 'What you need:',
   'serverless-empty-prereq-lambda':
-    'An AWS Lambda function with your activity code',
+    'An AWS Lambda function or an Amazon SNS topic for remote worker activation',
   'serverless-empty-prereq-iam':
-    'An IAM role allowing Temporal to invoke your function',
+    'For Lambda, an IAM role allowing Temporal to invoke the function; SNS can use local AWS credentials or an optional role',
   'serverless-empty-prereq-queue':
     'A task queue name for your serverless worker',
   'create-serverless-worker': 'Create Worker Deployment',
@@ -137,6 +137,10 @@ export const Strings = {
   'name-label': 'Name',
   'name-hint': 'A unique name for this serverless worker configuration.',
   'name-placeholder': 'my-serverless-worker',
+  'sns-topic-arn-label': 'SNS Topic ARN',
+  'sns-topic-arn-hint': 'The local Amazon SNS topic that receives worker activation notifications.',
+  'sns-topic-arn-placeholder': 'arn:aws:sns:us-west-2:123456789012:worker-activation',
+  'open-sns-console': 'Open SNS Console',
   'lambda-arn-label': 'Lambda Function ARN',
   'lambda-arn-hint': 'The ARN of the AWS Lambda function to invoke.',
   'lambda-arn-placeholder':
@@ -204,6 +208,9 @@ export const Strings = {
   'provider-lambda': 'AWS Lambda',
   'provider-lambda-description':
     'Run workers as Lambda functions in your AWS account.',
+  'provider-aws-sns': 'AWS SNS Worker',
+  'provider-aws-sns-description':
+    'Publish worker activation notifications to an SNS topic for remote workers to consume.',
   'provider-agentcore': 'Amazon Bedrock AgentCore',
   'provider-agentcore-description':
     'Run Workers as Bedrock AgentCore Runtime sessions in your AWS account.',

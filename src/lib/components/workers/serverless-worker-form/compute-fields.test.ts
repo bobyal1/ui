@@ -202,6 +202,16 @@ describe('Cloud Run Terraform helpers', () => {
 });
 
 describe('ComputeFields server-rendered setup guidance', () => {
+  it('renders the SNS topic field and makes IAM role fields optional', () => {
+    const body = renderComputeFields({ provider: 'aws-sns' });
+
+    expect(body).toContain('SNS Topic ARN');
+    expect(body).toContain('arn:aws:sns:us-west-2:123456789012:worker-activation');
+    expect(body).toContain('Open SNS Console');
+    expect(body).toContain('id="iamRoleArn"');
+    expect(body).toContain('id="roleExternalId"');
+  });
+
   it('renders Cloud Run guidance, link, warning, and accessible snippet label', () => {
     const body = renderComputeFields({
       provider: 'cloud-run',

@@ -4,11 +4,13 @@ import { base } from '$app/paths';
 
 import {
   buildAgentCoreComputeConfig,
+  buildAwsSnsComputeConfig,
   buildGcpCloudRunComputeConfig,
   buildLambdaComputeConfig,
   createWorkerDeployment,
   createWorkerDeploymentVersion,
   decodeAgentCoreProviderDetails,
+  decodeAwsSnsProviderDetails,
   decodeGcpCloudRunProviderDetails,
   decodeLambdaProviderDetails,
   decodeScalerDetails,
@@ -470,6 +472,41 @@ describe('deployments service', () => {
       const decoded = JSON.parse(atob(scalerData!));
       expect(decoded.scale_up_cooloff_ms).toBe(1000);
       expect(decoded.max_worker_lifetime_ms).toBe(60000);
+    });
+  });
+
+  describe('buildAwsSnsComputeConfig', () => {
+    const topicArn = 'arn:aws:sns:us-west-2:123456789012:worker-activation';
+
+    test('builds an SNS provider with a no-sync scaler and optional role fields', () => {
+      const config = buildAwsSnsComputeConfig(topicArn, '');
+      const group = config.scalingGroups?.['default'];
+      expect(group?.provider?.type).toBe('aws-sns');
+      expect(group?.scaler?.type).toBe('no-sync');
+      expect(JSON.parse(atob(group?.provider?.details?.data ?? ''))).toEqual({
+        topic_arn: topicArn,
+      });
+    });
+
+    test('includes optional role and external ID when provided', () => {
+      const role = 'arn:aws:iam::123456789012:role/sns-publisher';
+      const config = buildAwsSnsComputeConfig(topicArn, role, {
+        roleExternalId: 'external-id',
+      });
+      expect(
+        JSON.parse(
+          atob(config.scalingGroups?.['default']?.provider?.details?.data ?? ''),
+        ),
+      ).toEqual({
+        topic_arn: topicArn,
+        role,
+        role_external_id: 'external-id',
+      });
+      expect(decodeAwsSnsProviderDetails(config)).toEqual({
+        snsTopicArn: topicArn,
+        iamRoleArn: role,
+        roleExternalId: 'external-id',
+      });
     });
   });
 

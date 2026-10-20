@@ -28,6 +28,7 @@ import defaultLambdaCloudFormation from './temporal-worker-role.yaml?raw';
  */
 export const COMPUTE_PROVIDER_VALUES = [
   'lambda',
+  'aws-sns',
   'agentcore',
   'cloud-run',
 ] as const;
@@ -37,6 +38,7 @@ export type ComputeProviderValue = (typeof COMPUTE_PROVIDER_VALUES)[number];
 /** The `providerType` the API uses, as opposed to the short name the UI uses. */
 export type ComputeProviderType =
   | 'aws-lambda'
+  | 'aws-sns'
   | 'aws-agentcore'
   | 'gcp-cloud-run';
 
@@ -111,6 +113,16 @@ export const COMPUTE_PROVIDERS: Record<
     },
     terraformModuleHref: `${TERRAFORM_MODULES}/aws/lambda`,
   },
+  'aws-sns': {
+    value: 'aws-sns',
+    providerType: 'aws-sns',
+    icon: IconAwsColor,
+    labelKey: 'workers.provider-aws-sns',
+    descriptionKey: 'workers.provider-aws-sns-description',
+    badgeLabel: 'SNS',
+    releaseStage: 'public-preview',
+    templates: { terraform: '' },
+  },
   agentcore: {
     value: 'agentcore',
     providerType: 'aws-agentcore',
@@ -156,6 +168,7 @@ export const defaultComputeProviderTemplates: Record<
   ComputeProviderTemplates
 > = {
   lambda: COMPUTE_PROVIDERS.lambda.templates,
+  'aws-sns': COMPUTE_PROVIDERS['aws-sns'].templates,
   agentcore: COMPUTE_PROVIDERS.agentcore.templates,
   'cloud-run': COMPUTE_PROVIDERS['cloud-run'].templates,
 };

@@ -9,6 +9,7 @@ import {
 } from '$lib/holocene/duration-input/duration-input.svelte';
 import {
   buildAgentCoreComputeConfig,
+  buildAwsSnsComputeConfig,
   buildGcpCloudRunComputeConfig,
   buildLambdaComputeConfig,
 } from '$lib/services/deployments-service';
@@ -69,8 +70,9 @@ const AGENT_CORE_ENDPOINT_ARN =
   /^arn:aws:bedrock-agentcore:[a-z0-9-]+:\d{12}:runtime\/[^/]+\/runtime-endpoint\/[^/]+$/;
 
 const providerFields = {
-  provider: z.enum(['lambda', 'agentcore', 'cloud-run']).default('lambda'),
+  provider: z.enum(['lambda', 'aws-sns', 'agentcore', 'cloud-run']).default('lambda'),
   lambdaArn: z.string().default(''),
+  snsTopicArn: z.string().default(''),
   agentCoreEndpointArn: z.string().default(''),
   iamRoleArn: z.string().default(''),
   roleExternalId: z.string().default(''),
@@ -149,6 +151,27 @@ const validateProviderFields = (
       });
     }
     validateAwsAccessFields(data, ctx);
+  } else if (data.provider === 'aws-sns') {
+    if (!data.snsTopicArn) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['snsTopicArn'],
+        message: 'SNS Topic ARN is required',
+      });
+    } else if (!/^arn:aws:sns:[a-z0-9-]+:\d{12}:.+$/.test(data.snsTopicArn)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['snsTopicArn'],
+        message: 'Invalid SNS Topic ARN format',
+      });
+    }
+    if (data.iamRoleArn && !/^arn:aws:iam::\d{12}:role\/.+$/.test(data.iamRoleArn)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['iamRoleArn'],
+        message: 'Invalid IAM Role ARN format',
+      });
+    }
   } else if (data.provider === 'cloud-run') {
     if (!data.gcpProject)
       ctx.addIssue({
@@ -261,6 +284,14 @@ export const buildComputeConfigFromForm = (
     maxWorkerLifetimeMs: data.maxWorkerLifetimeMs,
     metricsPollIntervalMs: data.metricsPollIntervalMs,
   };
+
+  if (data.provider === 'aws-sns') {
+    return buildAwsSnsComputeConfig(
+      data.snsTopicArn,
+      data.iamRoleArn,
+      invokeScaling,
+    );
+  }
 
   if (data.provider === 'agentcore') {
     return buildAgentCoreComputeConfig(

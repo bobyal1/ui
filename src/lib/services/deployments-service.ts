@@ -464,6 +464,45 @@ const buildInvokeComputeConfig = (
   };
 };
 
+export const buildAwsSnsComputeConfig = (
+  topicArn: string,
+  iamRoleArn: string,
+  scalingOptions?: InvokeScalingOptions,
+): ComputeConfig => {
+  const providerPayload: Record<string, string> = { topic_arn: topicArn };
+  if (iamRoleArn) providerPayload.role = iamRoleArn;
+  if (scalingOptions?.roleExternalId)
+    providerPayload.role_external_id = scalingOptions.roleExternalId;
+
+  const scalerConfig: Record<string, number> = {};
+  if (scalingOptions?.scaleUpCooloffMs !== undefined)
+    scalerConfig.scale_up_cooloff_ms = scalingOptions.scaleUpCooloffMs;
+  if (scalingOptions?.scaleUpBacklogThreshold !== undefined)
+    scalerConfig.scale_up_backlog_threshold = scalingOptions.scaleUpBacklogThreshold;
+  if (scalingOptions?.maxWorkerLifetimeMs !== undefined)
+    scalerConfig.max_worker_lifetime_ms = scalingOptions.maxWorkerLifetimeMs;
+  if (scalingOptions?.scaleUpDispatchRateEpsilon !== undefined)
+    scalerConfig.scale_up_dispatch_rate_epsilon = scalingOptions.scaleUpDispatchRateEpsilon;
+  if (scalingOptions?.metricsPollIntervalMs !== undefined)
+    scalerConfig.metrics_poll_interval_ms = scalingOptions.metricsPollIntervalMs;
+
+  const encoding = btoa('json/plain');
+  return {
+    scalingGroups: {
+      default: {
+        provider: {
+          type: 'aws-sns',
+          details: { metadata: { encoding }, data: btoa(JSON.stringify(providerPayload)) },
+        },
+        scaler: {
+          type: 'no-sync',
+          details: { metadata: { encoding }, data: btoa(JSON.stringify(scalerConfig)) },
+        },
+      },
+    },
+  };
+};
+
 export const buildLambdaComputeConfig = (
   lambdaArn: string,
   iamRoleArn: string,
@@ -555,6 +594,24 @@ export const decodeLambdaProviderDetails = (
       roleExternalId?: string;
     } = {};
     if (raw.arn) result.lambdaArn = raw.arn;
+    if (raw.role) result.iamRoleArn = raw.role;
+    if (raw.role_external_id) result.roleExternalId = raw.role_external_id;
+    return result;
+  } catch {
+    return {};
+  }
+};
+
+export const decodeAwsSnsProviderDetails = (
+  computeConfig?: ComputeConfig,
+): { snsTopicArn?: string; iamRoleArn?: string; roleExternalId?: string } => {
+  const scalingGroup = Object.values(computeConfig?.scalingGroups ?? {})[0];
+  if (providerTypeOf(scalingGroup) !== 'aws-sns') return {};
+  if (!scalingGroup?.provider?.details?.data) return {};
+  try {
+    const raw = JSON.parse(atob(scalingGroup.provider.details.data));
+    const result: ReturnType<typeof decodeAwsSnsProviderDetails> = {};
+    if (raw.topic_arn) result.snsTopicArn = raw.topic_arn;
     if (raw.role) result.iamRoleArn = raw.role;
     if (raw.role_external_id) result.roleExternalId = raw.role_external_id;
     return result;
