@@ -602,6 +602,24 @@ export const decodeLambdaProviderDetails = (
   }
 };
 
+export const decodeAwsSnsProviderDetails = (
+  computeConfig?: ComputeConfig,
+): { snsTopicArn?: string; iamRoleArn?: string; roleExternalId?: string } => {
+  const scalingGroup = Object.values(computeConfig?.scalingGroups ?? {})[0];
+  if (providerTypeOf(scalingGroup) !== 'aws-sns') return {};
+  if (!scalingGroup?.provider?.details?.data) return {};
+  try {
+    const raw = JSON.parse(atob(scalingGroup.provider.details.data));
+    const result: ReturnType<typeof decodeAwsSnsProviderDetails> = {};
+    if (raw.topic_arn) result.snsTopicArn = raw.topic_arn;
+    if (raw.role) result.iamRoleArn = raw.role;
+    if (raw.role_external_id) result.roleExternalId = raw.role_external_id;
+    return result;
+  } catch {
+    return {};
+  }
+};
+
 export const decodeAgentCoreProviderDetails = (
   computeConfig?: ComputeConfig,
 ): {
