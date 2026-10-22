@@ -36,7 +36,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: temporal-ui-production-build
+          # Targets the entire directory but safely ignores massive source/cache paths
           path: |
-            .svelte-kit/
-            dist/
+            .
+            !node_modules/
+            !.git/
+            !.github/
           retention-days: 7
