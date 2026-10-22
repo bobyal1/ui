@@ -338,6 +338,7 @@ export const defaultReleaseStage: Record<
   lambda: COMPUTE_PROVIDERS.lambda.releaseStage,
   agentcore: COMPUTE_PROVIDERS.agentcore.releaseStage,
   'cloud-run': COMPUTE_PROVIDERS['cloud-run'].releaseStage,
+  'aws-sns': COMPUTE_PROVIDERS['aws-sns'].releaseStage,
 };
 
 interface InitialComputeProviderOptions {
