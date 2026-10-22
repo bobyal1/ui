@@ -30,7 +30,7 @@ jobs:
         uses: ./.github/actions/setup-node
 
       - name: Compile Application
-        run: pnpm run build
+        run: pnpm run build:local
 
       - name: Upload UI Binaries
         uses: actions/upload-artifact@v4
