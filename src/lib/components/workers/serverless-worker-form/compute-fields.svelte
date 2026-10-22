@@ -232,7 +232,8 @@
       id="snsTopicArn"
       name="snsTopicArn"
       label={translate('workers.sns-topic-arn-label')}
-      hintText={errors.snsTopicArn?.[0] || translate('workers.sns-topic-arn-hint')}
+      hintText={errors.snsTopicArn?.[0] ||
+        translate('workers.sns-topic-arn-hint')}
       error={!!errors.snsTopicArn?.[0]}
       placeholder={translate('workers.sns-topic-arn-placeholder')}
       required

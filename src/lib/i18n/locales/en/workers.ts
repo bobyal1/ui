@@ -138,8 +138,10 @@ export const Strings = {
   'name-hint': 'A unique name for this serverless worker configuration.',
   'name-placeholder': 'my-serverless-worker',
   'sns-topic-arn-label': 'SNS Topic ARN',
-  'sns-topic-arn-hint': 'The local Amazon SNS topic that receives worker activation notifications.',
-  'sns-topic-arn-placeholder': 'arn:aws:sns:us-west-2:123456789012:worker-activation',
+  'sns-topic-arn-hint':
+    'The local Amazon SNS topic that receives worker activation notifications.',
+  'sns-topic-arn-placeholder':
+    'arn:aws:sns:us-west-2:123456789012:worker-activation',
   'open-sns-console': 'Open SNS Console',
   'lambda-arn-label': 'Lambda Function ARN',
   'lambda-arn-hint': 'The ARN of the AWS Lambda function to invoke.',

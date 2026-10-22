@@ -76,8 +76,8 @@
     : agentCoreDetails.agentCoreEndpointArn
       ? 'agentcore'
       : gcpDetails.gcpWorkerPool
-      ? 'cloud-run'
-      : 'lambda'}
+        ? 'cloud-run'
+        : 'lambda'}
   <div class="flex max-w-[45rem] flex-col gap-4">
     <Link href={backHref} LeadingIcon={IconChevronLeft}>
       {translate('workers.back-to-deployment', { deployment })}
@@ -96,7 +96,10 @@
         snsTopicArn: snsDetails.snsTopicArn ?? '',
         agentCoreEndpointArn: agentCoreDetails.agentCoreEndpointArn ?? '',
         iamRoleArn:
-          providerDetails.iamRoleArn ?? agentCoreDetails.iamRoleArn ?? snsDetails.iamRoleArn ?? '',
+          providerDetails.iamRoleArn ??
+          agentCoreDetails.iamRoleArn ??
+          snsDetails.iamRoleArn ??
+          '',
         roleExternalId:
           providerDetails.roleExternalId ??
           agentCoreDetails.roleExternalId ??

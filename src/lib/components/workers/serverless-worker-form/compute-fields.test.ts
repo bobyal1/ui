@@ -206,7 +206,9 @@ describe('ComputeFields server-rendered setup guidance', () => {
     const body = renderComputeFields({ provider: 'aws-sns' });
 
     expect(body).toContain('SNS Topic ARN');
-    expect(body).toContain('arn:aws:sns:us-west-2:123456789012:worker-activation');
+    expect(body).toContain(
+      'arn:aws:sns:us-west-2:123456789012:worker-activation',
+    );
     expect(body).toContain('Open SNS Console');
     expect(body).toContain('id="iamRoleArn"');
     expect(body).toContain('id="roleExternalId"');

@@ -495,7 +495,9 @@ describe('deployments service', () => {
       });
       expect(
         JSON.parse(
-          atob(config.scalingGroups?.['default']?.provider?.details?.data ?? ''),
+          atob(
+            config.scalingGroups?.['default']?.provider?.details?.data ?? '',
+          ),
         ),
       ).toEqual({
         topic_arn: topicArn,

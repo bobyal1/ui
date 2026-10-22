@@ -70,7 +70,9 @@ const AGENT_CORE_ENDPOINT_ARN =
   /^arn:aws:bedrock-agentcore:[a-z0-9-]+:\d{12}:runtime\/[^/]+\/runtime-endpoint\/[^/]+$/;
 
 const providerFields = {
-  provider: z.enum(['lambda', 'aws-sns', 'agentcore', 'cloud-run']).default('lambda'),
+  provider: z
+    .enum(['lambda', 'aws-sns', 'agentcore', 'cloud-run'])
+    .default('lambda'),
   lambdaArn: z.string().default(''),
   snsTopicArn: z.string().default(''),
   agentCoreEndpointArn: z.string().default(''),
@@ -165,7 +167,10 @@ const validateProviderFields = (
         message: 'Invalid SNS Topic ARN format',
       });
     }
-    if (data.iamRoleArn && !/^arn:aws:iam::\d{12}:role\/.+$/.test(data.iamRoleArn)) {
+    if (
+      data.iamRoleArn &&
+      !/^arn:aws:iam::\d{12}:role\/.+$/.test(data.iamRoleArn)
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['iamRoleArn'],
